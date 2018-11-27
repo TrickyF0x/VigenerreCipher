@@ -58,8 +58,24 @@ namespace Vigenerre
                         {
                             Console.WriteLine("Введите строку!");
                         }
-                    }               
-                   
+                    }
+                else
+                {
+                    while (gamma.Length != 1)
+                    {
+
+                        Console.Write("Введите гамму: ");
+                        try
+                        {
+                            gamma = Console.ReadLine();
+                            gamma = gamma.ToLower();
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Введите один символ!");
+                        }
+                    }
+                }                   
 
                 if (variant == 1)
                 {
@@ -75,22 +91,7 @@ namespace Vigenerre
                     {
                         Console.Write("Введите текст для шифрования: ");
                         text = Console.ReadLine();
-                        text = text.ToLower();
-
-                        while (gamma.Length != text.Length)
-                        {
-
-                            Console.Write("Введите гамму: ");
-                            try
-                            {
-                                gamma = Console.ReadLine();
-                                gamma = gamma.ToLower();
-                            }
-                            catch
-                            {
-                                Console.WriteLine("Введите один символ!");
-                            }
-                        }
+                        text = text.ToLower();                        
 
                         Console.WriteLine(crypt(text, gamma, 2));
                     }
@@ -109,22 +110,7 @@ namespace Vigenerre
                     {
                         Console.Write("Введите текст для расшифрования: ");
                         text = Console.ReadLine();
-                        text = text.ToLower();
-
-                        while (gamma.Length != text.Length)
-                        {
-
-                            Console.Write("Введите гамму: ");
-                            try
-                            {
-                                gamma = Console.ReadLine();
-                                gamma = gamma.ToLower();
-                            }
-                            catch
-                            {
-                                Console.WriteLine("Введите один символ!");
-                            }
-                        }                       
+                        text = text.ToLower();                                           
 
                         Console.WriteLine(decrypt(text, gamma, 2));
                     }//decrypt
@@ -176,9 +162,10 @@ namespace Vigenerre
             else
             {
                 cypher_text[0] = find_char((find_index(text[0]) + find_index(gamma[0])) % 37); ++i;
+
                 while (i < text.Length)
                 {                   
-                    cypher_text[i] = find_char((find_index(text[i]) + find_index(text[i - 1])) % 37);
+                    cypher_text[i] = find_char((find_index(text[i]) + find_index(cypher_text[i - 1])) % 37);
                     ++i;
                 }
             }
@@ -207,10 +194,14 @@ namespace Vigenerre
                 }
             }
             else
-            {             
+            {
+                tmp = find_index(text[0]) - find_index(gamma[0]);
+                if (tmp < 0)
+                    tmp += 37;
+                decrypted_text[0] = find_char(tmp % 37); i = 1;
                 while (i < text.Length)
                 {
-                    tmp = find_index(text[i]) - find_index(gamma[i]);
+                    tmp = find_index(text[i]) - find_index(text[i - 1]);
                     if (tmp < 0)
                         tmp += 37;
                     decrypted_text[i] = find_char(tmp % 37);
